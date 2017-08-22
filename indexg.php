@@ -1,13 +1,23 @@
 <?php
+session_start();
 $db=mysql_connect('localhost','root');//konektor laczy sie z baza danych http://localhost/koncert/wyglad/indexg.php
 mysql_select_db("TechnikiInternetu");
+$cart_count=0;
+print_r($_SESSION);
+
+if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
+	foreach ($_SESSION["tickets"] as $key => $value) {
+		$cart_count =$cart_count+$value;
+	}
+}
+
 ?>
 
 <html>
 	<head>
 	<title> Szablon HTML </title>
 
-	<meta http-equiv="Content-type" content="text/html; charset=iso-8859-2">
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="Description" content="Mechanizm rejestracji użytkownika w aplikacji internetowej">
 	<meta name="Keywords" content="dane">
 	<meta name="Author" content=" Weronika Krasoń">
@@ -163,7 +173,7 @@ mysql_select_db("TechnikiInternetu");
        						<li><a href="#"onclick="document.getElementById('id01').style.display='block'"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
 
 							</li>				
-        					<li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> My bag</a></li>
+        					<li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> My bag (<?php echo($cart_count);?>)</a></li>
       					</ul>
        				</div>
 				</div>
@@ -177,27 +187,27 @@ mysql_select_db("TechnikiInternetu");
 			<div class="row ">
 				<div class="select">
 					<p>Select the date you would like to attend (if more than one is available) and the quantity of each ticket type you would like to purchase for that date.<br>Click 'Continue'</p>
-					<form action="/action_page.php">
+					<form action="add_to_cart.php" method="post">
 	 				<?php
-	 					$query = mysql_query("SELECT * FROM tickets") or die ("umarłem");
+	 					$query = mysql_query("SELECT * FROM tickets") or die ("die");
 						while ($row = mysql_fetch_array($query)){
 							echo('<div class="col-md-1 ticket">
 									<div class="ticket-text">
 									  	<h3>'.$row[2].'</h3><p>- electronic ticket to the bearer</p>
-									  	<h1>'.$row[1].'zł</h1>
+									  	<h1>'.$row[1].'$</h1>
 									</div>
 									<div class="center">
 										<hr>
 										<p>Choose quantity</p>
 										<div class="input-group">
 											<span class="input-group-btn">
-												<button type="button" class="btn btn-default btn-number box1" disabled="disabled" data-type="minus" data-field="quant['.$row[0].']">
+												<button type="button" class="btn btn-default btn-number box1" disabled="disabled" data-type="minus" data-field="ticket['.$row[0].']">
 													<span class="glyphicon glyphicon-minus"></span>
 												</button>
 											</span>
-											<input type="text" name="quant['.$row[0].']" class="form-control input-number box1" value="0">
+											<input type="text" name="ticket['.$row[0].']" class="form-control input-number box1" value="0">
 											<span class="input-group-btn">
-												<button type="button" class="btn btn-default btn-number box1" data-type="plus" data-field="quant['.$row[0].']">
+												<button type="button" class="btn btn-default btn-number box1" data-type="plus" data-field="ticket['.$row[0].']">
 													<span class="glyphicon glyphicon-plus"></span>
 												</button>
 											</span>
@@ -207,10 +217,10 @@ mysql_select_db("TechnikiInternetu");
 								</div>');
 						};
 	 				?>
+	 				<button type="submit" class="btn btn-default submit"> Continue </button>
 	 			</form>
 	 			</div>
 	 		</div>
-			<button type="button" class="btn btn-default"> Continue </button>
 
 		</div>
 		<footer>
