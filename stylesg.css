@@ -113,11 +113,16 @@ input[type=text], input[type=password] {
 	color: #2B8DB5;
 }
 
+.ticket:hover .box1{
+	background-color: #fafeff;
+}
 
 .ticket-text> h1{
 	padding-top: 80px;
 }
-
+.ticket input[type=text]{
+	border: 1px solid #ccc;
+}
 .select > p{
 	margin-top: 30px;
 	color: #2B8DB5 ;
