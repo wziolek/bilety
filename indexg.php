@@ -1,12 +1,36 @@
 <?php
-session_start();
+if(session_id() == '' || !isset($_SESSION)) {
+    // session isn't started
+    session_start();
+}
+//session_start();
 $db=mysql_connect('localhost','root');//konektor laczy sie z baza danych http://localhost/koncert/wyglad/indexg.php
 mysql_select_db("TechnikiInternetu");
 $cart_count=0;
+echo("<br><br><br><br><br><br><br><br><br><br><br><br><br><br>");
+
+print_r($_SESSION);
+echo("<br>");
+if (!empty($_POST)){//sprawdzam czy tickets istnieje w sesji
+	if(array_key_exists("tickets", $_SESSION)){
+		foreach ($_POST["ticket"] as $key => $value){
+			if(array_key_exists($key, $_SESSION["tickets"])){
+				$_SESSION["tickets"][$key] += $value;
+			}else{
+				$_SESSION["tickets"][$key] = $value;
+			}
+		}
+
+	}else{
+			$_SESSION["tickets"]=$_POST["ticket"];
+	}
+}//sprawdza czy zostało przesłane
 print_r($_SESSION);
 
 if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 	foreach ($_SESSION["tickets"] as $key => $value) {
+		echo($key);
+		echo($value);
 		$cart_count =$cart_count+$value;
 	}
 }
@@ -130,7 +154,7 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 			<div class="modal-dialog animate" role="document">
 				<div class="modal-content">
 					<div class="modal-body">
-					  	<form action="/action_page.php">
+					  	<form action="indexg.php">
 						    <div class="imgcontainer">
 						        <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
 						    </div>
@@ -187,7 +211,7 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 			<div class="row ">
 				<div class="select">
 					<p>Select the date you would like to attend (if more than one is available) and the quantity of each ticket type you would like to purchase for that date.<br>Click 'Continue'</p>
-					<form action="add_to_cart.php" method="post">
+					<form action="indexg.php" method="post">
 	 				<?php
 	 					$query = mysql_query("SELECT * FROM tickets") or die ("die");
 						while ($row = mysql_fetch_array($query)){
