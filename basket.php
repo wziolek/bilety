@@ -1,13 +1,44 @@
 <?php
+if(session_id() == '' || !isset($_SESSION)) {
+    // session isn't started
+    session_start();
+}
+//session_start();
 $db=mysql_connect('localhost','root');//konektor laczy sie z baza danych http://localhost/koncert/wyglad/indexg.php
 mysql_select_db("TechnikiInternetu");
-?>
 
+$cart_count=0;
+echo("<br>");
+if (!empty($_POST)){//sprawdzam czy tickets istnieje w sesji
+	if(array_key_exists("tickets", $_SESSION)){
+		foreach ($_POST["ticket"] as $key => $value){
+			if(array_key_exists($key, $_SESSION["tickets"])){
+				$_SESSION["tickets"][$key] += $value;
+			}else{
+				$_SESSION["tickets"][$key] = $value;
+			}
+		}
+
+	}else{
+			$_SESSION["tickets"]=$_POST["ticket"];
+	}
+}//sprawdza czy zostało przesłane
+
+
+if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
+	foreach ($_SESSION["tickets"] as $key => $value) {
+		//echo($key);
+		//echo($value);
+		$cart_count =$cart_count+$value;
+	}
+}
+
+?>
 <html>
 	<head>
 	<title> Szablon HTML </title>
 
-	<meta http-equiv="Content-type" content="text/html; charset=iso-8859-2">
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="Description" content="Mechanizm rejestracji użytkownika w aplikacji internetowej">
 	<meta name="Keywords" content="dane">
 	<meta name="Author" content=" Weronika Krasoń">
@@ -20,14 +51,14 @@ mysql_select_db("TechnikiInternetu");
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-	<script>
-		$(document).on('click', 'a', function(event){
-	    event.preventDefault();
-	    $('body').animate({
-	        scrollTop: $($.attr(this, 'href')).offset().top
-	   	 }, 800);
-		});
-	</script>
+	// <script>
+	// 	$(document).on('click', 'a', function(event){
+	//     event.preventDefault();
+	//     $('body').animate({
+	//         scrollTop: $($.attr(this, 'href')).offset().top
+	//    	 }, 800);
+	// 	});
+	// </script>
 	<script type="text/javascript">
 		//plugin bootstrap minus and plus
 		//http://jsfiddle.net/laelitenetwork/puJ6G/
@@ -146,7 +177,7 @@ mysql_select_db("TechnikiInternetu");
 				            <span class="icon-bar"></span>
 				            <span class="icon-bar"></span>
 			          	</button>
-				      	<a class=" logo navbar-brand" href="http://localhost/koncert/wyglad/indexg.php">BuyTicket</a>
+				      	<a class=" logo navbar-brand" href="indexg.php">BuyTicket</a>
 				    </div>
 				    <div class="collapse navbar-collapse">
           				<ul class="nav navbar-nav">
@@ -158,7 +189,7 @@ mysql_select_db("TechnikiInternetu");
        						<li><a href="#"onclick="document.getElementById('id01').style.display='block'"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
 
 							</li>				
-        					<li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> My bag</a></li>
+        					<li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> My bag(<?php echo($cart_count);?>)</a></li>
       					</ul>
        				</div>
 				</div>
@@ -186,6 +217,49 @@ mysql_select_db("TechnikiInternetu");
 					    </div>
 				  	</div>
 				  	<hr>
+
+
+
+
+				  	
+					    
+								<?php
+								$item_total=0;
+
+								if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
+									foreach ($_SESSION["tickets"] as $key => $value) {
+										if ($value > 0 ){
+											echo('<div class="row product">');
+					   							echo('<div class="col-md-4 col-sm-4 col-xs-12">');
+												$query = mysql_query("SELECT * FROM tickets where id_tickets=".$key) or die ("die");
+												$row = mysql_fetch_array($query);
+													echo($row[2]);
+													//echo('<span>'.$key.'</span>');
+												echo('</div>');
+												echo('<div class="col-md-2 col-sm-2 col-xs-12">');
+					    							//echo('<a href="#" title="Decrease quantity" class="glyphicon glyphicon-chevron-left icon"></a>');
+					    							echo('<input class="quantityInput white" type="value" value="'.$value.'" readonly="readonly">');
+					    							//echo('<a href="#" title="I\'d like more please" class="glyphicon glyphicon-chevron-right icon"></a>');
+					    						echo('</div>');
+					    						echo('<div class="col-md-2 col-sm-2 col-xs-12">');
+					    							echo($row[1]);
+					    						echo('</div>');
+					    						echo('<div class="col-md-2 col-sm-2 col-xs-12">');
+					    							echo($value*$row[1]);
+					    						echo('</div>');
+						    					echo('<div class="col-md-2 col-sm-2 col-xs-12">');
+						    						echo('<a href="#" class="glyphicon glyphicon-remove icon" title="Remove product from cart"></a>');
+					    						echo('</div>');				    									    						
+					    					echo('</div>');
+					    					$item_total=$item_total+($value*$row[1]);
+
+										}
+									}
+								echo ("<hr>");
+								}
+								?>
+					<br>
+					<br>
 					<div class="row">
 					    <div class="col-md-6 col-sm-6 col-xs-12">
 					    	<h6>PLEASE ENTER YOUR PROMOTION CODE</h6>
@@ -214,14 +288,15 @@ mysql_select_db("TechnikiInternetu");
 					    </div>
 					    <div class="col-md-3 col-sm-3 col-xs-6">
 					    	<div class="row">
-					    		<div class="col-md-12 col-sm-12 col-xs-12">
-					    			<h6>E</h6>
+					    		<div>
+					    			<h6>
+					    			<?php echo($item_total);?>E</h6>
 					    		</div>
 					    		<div class="col-md-12 col-sm-12 col-xs-12">
-					    			<h6>E</h6>
+					    			<h6>6E</h6>
 					    		</div>
 					    		<div class="col-md-12 col-sm-12 col-xs-12">
-					    			<h6>E</h6>
+					    			<h6><?php echo($item_total+6);?>E</h6>
 					    		</div>
 							</div>
 					    </div>
@@ -445,5 +520,9 @@ mysql_select_db("TechnikiInternetu");
 		</footer>
 	</body>
 </html>
+
+
+
+
 
   

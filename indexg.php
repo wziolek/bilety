@@ -7,30 +7,10 @@ if(session_id() == '' || !isset($_SESSION)) {
 $db=mysql_connect('localhost','root');//konektor laczy sie z baza danych http://localhost/koncert/wyglad/indexg.php
 mysql_select_db("TechnikiInternetu");
 $cart_count=0;
-echo("<br><br><br><br><br><br><br><br><br><br><br><br><br><br>");
 
-print_r($_SESSION);
-echo("<br>");
-if (!empty($_POST)){//sprawdzam czy tickets istnieje w sesji
-	if(array_key_exists("tickets", $_SESSION)){
-		foreach ($_POST["ticket"] as $key => $value){
-			if(array_key_exists($key, $_SESSION["tickets"])){
-				$_SESSION["tickets"][$key] += $value;
-			}else{
-				$_SESSION["tickets"][$key] = $value;
-			}
-		}
-
-	}else{
-			$_SESSION["tickets"]=$_POST["ticket"];
-	}
-}//sprawdza czy zostało przesłane
-print_r($_SESSION);
 
 if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 	foreach ($_SESSION["tickets"] as $key => $value) {
-		echo($key);
-		echo($value);
 		$cart_count =$cart_count+$value;
 	}
 }
@@ -55,14 +35,14 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script>
-		$(document).on('click', 'a', function(event){
-	    event.preventDefault();
-	    $('body').animate({
-	        scrollTop: $($.attr(this, 'href')).offset().top
-	   	 }, 800);
-		});
-	</script>
+	// <script>
+	// 	$(document).on('click', 'a', function(event){
+	//     event.preventDefault();
+	//     $('body').animate({
+	//         scrollTop: $($.attr(this, 'href')).offset().top
+	//    	 }, 800);
+	// 	});
+	// </script>
 	<script   src="https://code.jquery.com/jquery-3.2.1.min.js"   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="   crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -185,7 +165,7 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 				            <span class="icon-bar"></span>
 				            <span class="icon-bar"></span>
 			          	</button>
-				      	<a class=" logo navbar-brand" href="http://localhost/koncert/wyglad/indexg.php">BuyTicket</a>
+				      	<a class=" logo navbar-brand" href="indexg.php">BuyTicket</a>
 				    </div>
 				    <div class="collapse navbar-collapse">
           				<ul class="nav navbar-nav">
@@ -197,7 +177,7 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
        						<li><a href="#"onclick="document.getElementById('id01').style.display='block'"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
 
 							</li>				
-        					<li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> My bag (<?php echo($cart_count);?>)</a></li>
+        					<li><a href="basket.php"><span class="glyphicon glyphicon-shopping-cart"></span> My bag (<?php echo($cart_count);?>)</a></li>
       					</ul>
        				</div>
 				</div>
@@ -211,7 +191,7 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 			<div class="row ">
 				<div class="select">
 					<p>Select the date you would like to attend (if more than one is available) and the quantity of each ticket type you would like to purchase for that date.<br>Click 'Continue'</p>
-					<form action="indexg.php" method="post">
+					<form action="basket.php" method="post">
 	 				<?php
 	 					$query = mysql_query("SELECT * FROM tickets") or die ("die");
 						while ($row = mysql_fetch_array($query)){
@@ -241,7 +221,7 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 								</div>');
 						};
 	 				?>
-	 				<button type="submit" class="btn btn-default submit"> Continue </button>
+	 				<button type="submit" class="btn btn-default submit"<a href="basket.php"></a> Continue </button>
 	 			</form>
 	 			</div>
 	 		</div>

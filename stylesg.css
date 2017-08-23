@@ -214,7 +214,11 @@ color: black;
 	margin-bottom: 5px;
 }
 
-
+.product input[type=value]{
+	display: inline-block;
+	border: 0px solid white;
+	background-color: white;
+}
 
 /* Extra small devices (phones, less than 768px) */
 /* No media query since this is the default in Bootstrap */
