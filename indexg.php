@@ -35,14 +35,7 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	// <script>
-	// 	$(document).on('click', 'a', function(event){
-	//     event.preventDefault();
-	//     $('body').animate({
-	//         scrollTop: $($.attr(this, 'href')).offset().top
-	//    	 }, 800);
-	// 	});
-	// </script>
+
 	<script   src="https://code.jquery.com/jquery-3.2.1.min.js"   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="   crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -130,58 +123,54 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 	</script>
 	</head>
 	<body>
-		<div id="id01" class="modal" tabindex="-1" role="dialog">
-			<div class="modal-dialog animate" role="document">
-				<div class="modal-content">
-					<div class="modal-body">
-					  	<form action="indexg.php">
-						    <div class="imgcontainer">
-						        <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-						    </div>
-						    <div class="login">
-						    	<h2>Sign up</h2>
-						    	<hr>
-						     	<label class="h">Email</label>
-						    	<input type="text" placeholder="Enter Username" name="uname" required></input>
-
-						    	<label class="h">Password</label>
-						    	<input type="password" placeholder="Enter Password" name="psw" required></input>
-						     	<a class="remember" href="#">CAN'T REMEMBER YOUR PASSWORD?</a>
-						      	<button type="submit" type="button" class="btn btn-default">SIGN IN</button>
-						      	<input type="checkbox" checked="checked">Remember me</input>
-						    </div>
-					  	</form>
-					</div>
-				</div>
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  	<div class="modal-dialog" role="document">
+	    	<div class="modal-content">
+	     		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        		<h4 class="modal-title" id="myModalLabel">Sign up</h4>
+	      		</div>
+	      		<div class="modal-body">
+					<label class="h">Email</label>
+			    	<input type="text" placeholder="Enter Username" name="uname" required></input>
+			    	<label class="h">Password</label>
+			    	<input type="password" placeholder="Enter Password" name="psw" required></input>
+			     	<p><a class="forgotten" href="#">Forgotten your password?</a></p>
+			      	<div class="signin">
+		      			<button type="submit" type="button" class="btn btn-default submit">SIGN IN</button>
+		      		</div>
 			</div>
-		</div>
+	    	</div>
+	  	</div>
+	</div><!-- Modal -->
 		<header>
-			<div class="navbar navbar-fixed-top" role="navigation">
-				<div class="container">
-				    <div class="navbar-header">
-				        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-				            <span class="sr-only">Toggle navigation</span>
-				            <span class="icon-bar"></span>
-				            <span class="icon-bar"></span>
-				            <span class="icon-bar"></span>
-			          	</button>
-				      	<a class=" logo navbar-brand" href="indexg.php">BuyTicket</a>
-				    </div>
-				    <div class="collapse navbar-collapse">
-          				<ul class="nav navbar-nav">
-				            <li><a href="header">Home</a></li>
-				            <li><a href=".row" href="#row">Tickets</a></li>
-				            <li><a href=".contact">Contact</a></li>
-			         	</ul>
-			         	<ul class="nav navbar-nav navbar-right">
-       						<li><a href="#"onclick="document.getElementById('id01').style.display='block'"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-
-							</li>				
-        					<li><a href="basket.php"><span class="glyphicon glyphicon-shopping-cart"></span> My bag (<?php echo($cart_count);?>)</a></li>
-      					</ul>
-       				</div>
-				</div>
-			</div>
+		<!-- Nav -->
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+	      	<div class="container">
+		        <div class="navbar-header">
+		          	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+			            <span class="sr-only">Toggle navigation</span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+		          </button>
+		          <a class="navbar-brand" href="#">BuyTicket</a>
+		        </div>
+	        	<div id="navbar" class="collapse navbar-collapse">
+		          	<ul class="nav navbar-nav">
+		            	<li class="active"><a href="indexg.php">Home</a></li>
+		            	<li><a href="#about">Tickets</a></li>
+		            	<li><a href="#contact">Contact</a></li>
+		          	</ul>
+		         	<ul class="nav navbar-nav navbar-right">
+<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>			
+		        		<li><a href="basket.php"><span class="glyphicon glyphicon-shopping-cart"></span> My bag(<?php echo($cart_count);?>)</a></li>
+		      		</ul>
+	        	</div><!--/.nav-collapse -->
+	      	</div>
+	    </nav>
+	    <!-- Nav -->
 		</header>
 		<div class="container page">
       		<div class="starter-template">
@@ -420,12 +409,9 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 					<div class="col-md-6 adress">
 						<div class="row ">
 							<h2>Buy Ticket</h2>
-
 							<p class="lead">Give us a call or send us an email and we will get back to you as soon as possible!</p>
-							
 							<div class="col-md-6 icons">
-				      			<p><span class="glyphicon glyphicon-envelope"></span></p> 
-				      			<a href="buyticket@buyticket.com" target="_top"><h5>buyticket@buyticket.com</h5></a> 
+				      			<a href="buyticket@buyticket.com" target="_top"><span class="glyphicon glyphicon-envelope"></span> <h5>buyticket@buyticket.com</h5></a> 
 							</div>
 							<div class="col-md-6 icons">
 								<p><span class="glyphicon glyphicon-phone"></span></p> 
