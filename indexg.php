@@ -14,6 +14,42 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 		$cart_count =$cart_count+$value;
 	}
 }
+//system logowania
+
+if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
+	unset($_SESSION['login']);
+	unset($_SESSION['is_admin']);
+	$login = $_POST["login"];
+	$password = $_POST["password"];
+
+	$login = stripcslashes($login);//pozbywa sie slashy
+	$password = stripcslashes($password);
+
+	$login = mysql_real_escape_string($login);//zamienia znaki na tekst ( string)
+	$password = mysql_real_escape_string($password);
+
+	//$password = password_hash($password,PASSWORD_DEFAULT);
+
+	$query = mysql_query("SELECT login, password, is_admin FROM Customer WHERE login='".$login."'") or die ('die');
+	$result = mysql_fetch_assoc($query);//pobranie
+
+	if($result){//&& $result['login'] == $login && $result['password'] == $password){//jezeli istnieje result , i 
+		if (password_verify($password, $result['password'])) {
+			$_SESSION["login"]= $result['login'];
+		    if($result['is_admin']==1){
+				// $loggedin = "Hello admin".$result['login'];
+				$_SESSION["is_admin"]=1;
+			// }else{
+			// 	$loggedin = "Hello ".$result['login'];
+			}
+		} else {
+		    echo 'Invalid password.';
+		}
+	}else{
+		echo " Błędne logowanie!";
+	}
+
+}//system logowania
 
 ?>
 
@@ -133,13 +169,12 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 	      		</div>
 	      		<div class="modal-body">
 					<label class="h">Email</label>
-			    	<input type="text" placeholder="Enter Username" name="uname" required></input>
+			    	<input type="text" placeholder="Enter Username" name="login" required></input>
 			    	<label class="h">Password</label>
-			    	<input type="password" placeholder="Enter Password" name="psw" required></input>
+			    	<input type="password" placeholder="Enter Password" name="password" required></input>
 			     	<p><a class="forgotten" href="#">Forgotten your password?</a></p>
-			      	<div class="signin">
-		      			<button type="submit" type="button" class="btn btn-default submit">SIGN IN</button>
-		      		</div>
+			      	<button type="submit" type="button" class="btn btn-default submit">SIGN IN</button></p>
+		      	</div>
 			</div>
 	    	</div>
 	  	</div>
@@ -154,6 +189,8 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 			            <span class="icon-bar"></span>
 			            <span class="icon-bar"></span>
 			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
 		          </button>
 		          <a class="navbar-brand" href="#">BuyTicket</a>
 		        </div>
@@ -163,10 +200,19 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 		            	<li><a href="#about">Tickets</a></li>
 		            	<li><a href="#contact">Contact</a></li>
 		          	</ul>
-		         	<ul class="nav navbar-nav navbar-right">
-<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>			
+			         <ul class="nav navbar-nav navbar-right">
+		         		<?php
+		         		if(!empty($_SESSION)){
+		         			if(array_key_exists("login", $_SESSION)){
+		         				echo('<li><a href="userpage.php">Hello '.$_SESSION["login"].'</a></li>');
+		         				echo('<li><a href="userpage.php">Sign out</a></li>');
+		         			}
+		         		}else{
+		         			echo('<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign in</a></li>');
+		         		}
+		         		?>		
 		        		<li><a href="basket.php"><span class="glyphicon glyphicon-shopping-cart"></span> My bag(<?php echo($cart_count);?>)</a></li>
-		      		</ul>
+			      	</ul>
 	        	</div><!--/.nav-collapse -->
 	      	</div>
 	    </nav>

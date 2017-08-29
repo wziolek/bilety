@@ -310,3 +310,19 @@ div.panel.panel-default{
 a.forgotten{
 	color:#83438A;
 }
+
+/*USERPAGE*/
+.page <.user_order{
+
+	text-align: left;
+}
+
+/*ORDER*/
+.order{
+	text-align: left;
+}
+.order hr{
+	width: 70%;
+	text-align: left;
+position: relative;
+}

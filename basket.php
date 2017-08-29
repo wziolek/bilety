@@ -185,8 +185,17 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 		            	<li><a href="#contact">Contact</a></li>
 		          	</ul>
 		         	<ul class="nav navbar-nav navbar-right">
-						<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>			
-		        		<li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> My bag(<?php echo($cart_count);?>)</a></li>
+		         		<?php
+		         		if(!empty($_SESSION)){
+		         			if(array_key_exists("login", $_SESSION)){
+		         				echo('<li><a href="userpage.php">Hello '.$_SESSION["login"].'</a></li>');
+		         				echo('<li><a href="userpage.php">Sign out</a></li>');
+		         			}
+		         		}else{
+		         			echo('<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign in</a></li>');
+		         		}
+		         		?>		
+		        		<li><a href="basket.php"><span class="glyphicon glyphicon-shopping-cart"></span> My bag(<?php echo($cart_count);?>)</a></li>
 		      		</ul>
 	        	</div><!--/.nav-collapse -->
 	      	</div>
@@ -196,19 +205,19 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
     		<h3>Shopping bag</h3>
    			<div class="container shopping">
 			  	<div class="row">
-				    <div class="col-md-4 col-sm-4 col-xs-12">
+				    <div class="col-md-4 col-sm-4 col-xs-4">
 				       <h6>Item</h6>
 				    </div>
-				    <div class="col-md-2 col-sm-2 col-xs-12">
+				    <div class="col-md-2 col-sm-2 col-xs-2">
 				       <h6>Quantity</h6>
 				    </div>
-				    <div class="col-md-2 col-sm-2 col-xs-12">
+				    <div class="col-md-2 col-sm-2 col-xs-2">
 				        <h6>Unit price</h6>
 				    </div>
-				    <div class="col-md-2 col-sm-2 col-xs-12">
+				    <div class="col-md-2 col-sm-2 col-xs-22">
 				        <h6>Total price</h6>
 				    </div>
-				    <div class="col-md-2 col-sm-2 col-xs-12">
+				    <div class="col-md-2 col-sm-2 col-xs-2">
 				      	<h6>Remove</h6>
 				    </div>
 			  	</div>
@@ -219,24 +228,24 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 						foreach ($_SESSION["tickets"] as $key => $value) {
 							if ($value > 0 ){
 								echo('<div class="row product">');
-		   						echo('<div class="col-md-4 col-sm-4 col-xs-12">');
+		   						echo('<div class="col-md-4 col-sm-4 col-xs-4">');
 								$query = mysql_query("SELECT * FROM tickets where id_tickets=".$key) or die ("die");
 								$row = mysql_fetch_array($query);
 								echo($row[2]);
 								//echo('<span>'.$key.'</span>');
 								echo('</div>');
-								echo('<div class="col-md-2 col-sm-2 col-xs-12">');
+								echo('<div class="col-md-2 col-sm-2 col-xs-2">');
 	    							//echo('<a href="#" title="Decrease quantity" class="glyphicon glyphicon-chevron-left icon"></a>');
 	    						echo('<input class="quantityInput white" type="value" value="'.$value.'" readonly="readonly">');
 	    							//echo('<a href="#" title="I\'d like more please" class="glyphicon glyphicon-chevron-right icon"></a>');
 	    						echo('</div>');
-	    						echo('<div class="col-md-2 col-sm-2 col-xs-12">');
+	    						echo('<div class="col-md-2 col-sm-2 col-xs-2">');
 	    						echo($row[1]);
 	    						echo('</div>');
-	    						echo('<div class="col-md-2 col-sm-2 col-xs-12">');
+	    						echo('<div class="col-md-2 col-sm-2 col-xs-2">');
 	    							echo($value*$row[1]);
 	    						echo('</div>');
-		    					echo('<div class="col-md-2 col-sm-2 col-xs-12">');
+		    					echo('<div class="col-md-2 col-sm-2 col-xs-2">');
 		    						echo('<a href="basket.php?delete_ticket_id='.$row[0].'" class="glyphicon glyphicon-remove icon" title="Remove product from cart"></a>');
 	    						echo('</div>');				    									    						
 	    						echo('</div>');
@@ -249,7 +258,7 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 				<br>
 				<br>
 				<div class="row">
-				    <div class="col-md-6 col-sm-6 col-xs-12">
+				    <div class="col-md-6 col-sm-6 col-xs-6">
 				    	<h6>PLEASE ENTER YOUR PROMOTION CODE</h6>
 						<form class="form-inline">
 						  	<div class="form-group">
@@ -259,7 +268,7 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 						  	<button type="submit" type="button" class="btn btn-default">OK</button>
 						</form>
 				    </div>
-				    <div class="col-md-3 col-sm-3 col-xs-6">
+				    <div class="col-md-3 col-sm-3 col-xs-3">
 				    	<div class="row">
 				    		<div class="col-md-12 col-sm-12 col-xs-12">
 				    			<h6>ITEM TOTAL:</h6>
@@ -272,7 +281,7 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 				    		</div>
 						</div>
 				    </div>
-				    <div class="col-md-3 col-sm-3 col-xs-6">
+				    <div class="col-md-3 col-sm-3 col-xs-3">
 				    	<div class="row">
 				    		<div>
 				    			<h6>
