@@ -1,222 +1,161 @@
 <?php
-if(session_id() == '' || !isset($_SESSION)) {
-    // session isn't started
-    session_start();
-}
-//session_start();
-$db=mysql_connect('localhost','root');//konektor laczy sie z baza danych http://localhost/koncert/wyglad/indexg.php
-mysql_select_db("TechnikiInternetu");
-$cart_count=0;
-
-
-if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
-	foreach ($_SESSION["tickets"] as $key => $value) {
-		$cart_count =$cart_count+$value;
-	}
-}
-//system logowania
-
-if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
-	unset($_SESSION['login']);
-	unset($_SESSION['is_admin']);
-	$login = $_POST["login"];
-	$password = $_POST["password"];
-
-	$login = stripcslashes($login);//pozbywa sie slashy
-	$password = stripcslashes($password);
-
-	$login = mysql_real_escape_string($login);//zamienia znaki na tekst ( string)
-	$password = mysql_real_escape_string($password);
-
-	//$password = password_hash($password,PASSWORD_DEFAULT);
-
-	$query = mysql_query("SELECT login, password, is_admin FROM Customer WHERE login='".$login."'") or die ('die');
-	$result = mysql_fetch_assoc($query);//pobranie
-
-	if($result){//&& $result['login'] == $login && $result['password'] == $password){//jezeli istnieje result , i 
-		if (password_verify($password, $result['password'])) {
-			$_SESSION["login"]= $result['login'];
-		    if($result['is_admin']==1){
-				// $loggedin = "Hello admin".$result['login'];
-				$_SESSION["is_admin"]=1;
-			// }else{
-			// 	$loggedin = "Hello ".$result['login'];
-			}
-		} else {
-		    echo 'Invalid password.';
-		}
-	}else{
-		echo " Błędne logowanie!";
-	}
-
-}//system logowania
-
+	include "php.php";
 ?>
-
 <html>
 	<head>
-	<title> Szablon HTML </title>
+		<title> Szablon HTML </title>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<meta name="Description" content="Mechanizm rejestracji użytkownika w aplikacji internetowej">
+		<meta name="Keywords" content="dane">
+		<meta name="Author" content=" Weronika Krasoń">
+		<link rel="stylesheet" href="stylesg.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script   src="https://code.jquery.com/jquery-3.2.1.min.js"   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="   crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<script type="text/javascript">
+			//plugin bootstrap minus and plus
+			//http://jsfiddle.net/laelitenetwork/puJ6G/
+			$( document ).ready(function() {
+			    $('.btn-number').click(function(e){
+			        e.preventDefault();
+			        
+			        var fieldName = $(this).attr('data-field');
+			        var type      = $(this).attr('data-type');
+			        var input = $("input[name='"+fieldName+"']");
+			        var currentVal = parseInt(input.val());
+			        if (!isNaN(currentVal)) {
+			            if(type == 'minus') {
+			                var minValue = parseInt(input.attr('min')); 
+			                if(!minValue) minValue = 0;
+			                if(currentVal > minValue) {
+			                    input.val(currentVal - 1).change();
+			                } 
+			                if(parseInt(input.val()) == minValue) {
+			                    $(this).attr('disabled', true);
+			                }
+			    
+			            } else if(type == 'plus') {
+			                var maxValue = parseInt(input.attr('max'));
+			                if(!maxValue) maxValue = 9999999999999;
+			                if(currentVal < maxValue) {
+			                    input.val(currentVal + 1).change();
+			                }
+			                if(parseInt(input.val()) == maxValue) {
+			                    $(this).attr('disabled', true);
+			                }
+			    
+			            }
+			        } else {
+			            input.val(0);
+			        }
 
-	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<meta name="Description" content="Mechanizm rejestracji użytkownika w aplikacji internetowej">
-	<meta name="Keywords" content="dane">
-	<meta name="Author" content=" Weronika Krasoń">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-	<link rel="stylesheet" href="stylesg.css">
-
-  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-	<script   src="https://code.jquery.com/jquery-3.2.1.min.js"   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="   crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	<script type="text/javascript">
-		//plugin bootstrap minus and plus
-		//http://jsfiddle.net/laelitenetwork/puJ6G/
-		$( document ).ready(function() {
-		    $('.btn-number').click(function(e){
-		        e.preventDefault();
-		        
-		        var fieldName = $(this).attr('data-field');
-		        var type      = $(this).attr('data-type');
-		        var input = $("input[name='"+fieldName+"']");
-		        var currentVal = parseInt(input.val());
-		        if (!isNaN(currentVal)) {
-		            if(type == 'minus') {
-		                var minValue = parseInt(input.attr('min')); 
-		                if(!minValue) minValue = 0;
-		                if(currentVal > minValue) {
-		                    input.val(currentVal - 1).change();
-		                } 
-		                if(parseInt(input.val()) == minValue) {
-		                    $(this).attr('disabled', true);
-		                }
-		    
-		            } else if(type == 'plus') {
-		                var maxValue = parseInt(input.attr('max'));
-		                if(!maxValue) maxValue = 9999999999999;
-		                if(currentVal < maxValue) {
-		                    input.val(currentVal + 1).change();
-		                }
-		                if(parseInt(input.val()) == maxValue) {
-		                    $(this).attr('disabled', true);
-		                }
-		    
-		            }
-		        } else {
-		            input.val(0);
-		        }
-
-		    });
-		    $('.input-number').focusin(function(){
-		       $(this).data('oldValue', $(this).val());
-		    });
-		    $('.input-number').change(function() {
-		        
-		        var minValue =  parseInt($(this).attr('min'));
-		        var maxValue =  parseInt($(this).attr('max'));
-		        if(!minValue) minValue = 0;
-		        if(!maxValue) maxValue = 9999999999999;
-		        var valueCurrent = parseInt($(this).val());
-		        
-		        var name = $(this).attr('name');
-		        if(valueCurrent >= minValue) {
-		            $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
-		        } else {
-		            alert('Sorry, the minimum value was reached');
-		            $(this).val($(this).data('oldValue'));
-		        }
-		        if(valueCurrent <= maxValue) {
-		            $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
-		        } else {
-		            alert('Sorry, the maximum value was reached');
-		            $(this).val($(this).data('oldValue'));
-		        }
-		        
-		        
-		    });
-		    $(".input-number").keydown(function (e) {
-		            // Allow: backspace, delete, tab, escape, enter and .
-		            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
-		                 // Allow: Ctrl+A
-		                (e.keyCode == 65 && e.ctrlKey === true) || 
-		                 // Allow: home, end, left, right
-		                (e.keyCode >= 35 && e.keyCode <= 39)) {
-		                     // let it happen, don't do anything
-		                     return;
-		            }
-		            // Ensure that it is a number and stop the keypress
-		            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-		                e.preventDefault();
-		            }
-		    });
-		});		
-	</script>
+			    });
+			    $('.input-number').focusin(function(){
+			       $(this).data('oldValue', $(this).val());
+			    });
+			    $('.input-number').change(function() {
+			        
+			        var minValue =  parseInt($(this).attr('min'));
+			        var maxValue =  parseInt($(this).attr('max'));
+			        if(!minValue) minValue = 0;
+			        if(!maxValue) maxValue = 9999999999999;
+			        var valueCurrent = parseInt($(this).val());
+			        
+			        var name = $(this).attr('name');
+			        if(valueCurrent >= minValue) {
+			            $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
+			        } else {
+			            alert('Sorry, the minimum value was reached');
+			            $(this).val($(this).data('oldValue'));
+			        }
+			        if(valueCurrent <= maxValue) {
+			            $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
+			        } else {
+			            alert('Sorry, the maximum value was reached');
+			            $(this).val($(this).data('oldValue'));
+			        }
+			        
+			        
+			    });
+			    $(".input-number").keydown(function (e) {
+			            // Allow: backspace, delete, tab, escape, enter and .
+			            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+			                 // Allow: Ctrl+A
+			                (e.keyCode == 65 && e.ctrlKey === true) || 
+			                 // Allow: home, end, left, right
+			                (e.keyCode >= 35 && e.keyCode <= 39)) {
+			                     // let it happen, don't do anything
+			                     return;
+			            }
+			            // Ensure that it is a number and stop the keypress
+			            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+			                e.preventDefault();
+			            }
+			    });
+			});		
+		</script>
 	</head>
 	<body>
-	<!-- Modal -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-	  	<div class="modal-dialog" role="document">
-	    	<div class="modal-content">
-	     		<div class="modal-header">
-	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        		<h4 class="modal-title" id="myModalLabel">Sign up</h4>
-	      		</div>
-	      		<div class="modal-body">
-					<label class="h">Email</label>
-			    	<input type="text" placeholder="Enter Username" name="login" required></input>
-			    	<label class="h">Password</label>
-			    	<input type="password" placeholder="Enter Password" name="password" required></input>
-			     	<p><a class="forgotten" href="#">Forgotten your password?</a></p>
-			      	<button type="submit" type="button" class="btn btn-default submit">SIGN IN</button></p>
-		      	</div>
-			</div>
-	    	</div>
-	  	</div>
-	</div><!-- Modal -->
+		<!-- Modal -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  	<div class="modal-dialog" role="document">
+		    	<div class="modal-content">
+		     		<div class="modal-header">
+		        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        		<h4 class="modal-title" id="myModalLabel">Sign up</h4>
+		      		</div>
+		      		<div class="modal-body">
+						<label class="h">Email</label>
+				    	<input type="text" placeholder="Enter Username" name="login" required></input>
+				    	<label class="h">Password</label>
+				    	<input type="password" placeholder="Enter Password" name="password" required></input>
+				     	<p><a class="forgotten" href="#">Forgotten your password?</a></p>
+				      	<button type="submit" type="button" class="btn btn-default submit">SIGN IN</button></p>
+			      	</div>
+				</div>
+		    	</div>
+		  	</div>
+		</div><!-- Modal -->
 		<header>
-		<!-- Nav -->
-		<nav class="navbar navbar-inverse navbar-fixed-top">
-	      	<div class="container">
-		        <div class="navbar-header">
-		          	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-			            <span class="sr-only">Toggle navigation</span>
-			            <span class="icon-bar"></span>
-			            <span class="icon-bar"></span>
-			            <span class="icon-bar"></span>
-			            <span class="icon-bar"></span>
-			            <span class="icon-bar"></span>
-		          </button>
-		          <a class="navbar-brand" href="#">BuyTicket</a>
-		        </div>
-	        	<div id="navbar" class="collapse navbar-collapse">
-		          	<ul class="nav navbar-nav">
-		            	<li class="active"><a href="indexg.php">Home</a></li>
-		            	<li><a href="#about">Tickets</a></li>
-		            	<li><a href="#contact">Contact</a></li>
-		          	</ul>
-			         <ul class="nav navbar-nav navbar-right">
-		         		<?php
-		         		if(!empty($_SESSION)){
-		         			if(array_key_exists("login", $_SESSION)){
-		         				echo('<li><a href="userpage.php">Hello '.$_SESSION["login"].'</a></li>');
-		         				echo('<li><a href="userpage.php">Sign out</a></li>');
-		         			}
-		         		}else{
-		         			echo('<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign in</a></li>');
-		         		}
-		         		?>		
-		        		<li><a href="basket.php"><span class="glyphicon glyphicon-shopping-cart"></span> My bag(<?php echo($cart_count);?>)</a></li>
-			      	</ul>
-	        	</div><!--/.nav-collapse -->
-	      	</div>
-	    </nav>
-	    <!-- Nav -->
+			<!-- Nav -->
+			<nav class="navbar navbar-inverse navbar-fixed-top">
+		      	<div class="container">
+			        <div class="navbar-header">
+			          	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				            <span class="sr-only">Toggle navigation</span>
+				            <span class="icon-bar"></span>
+				            <span class="icon-bar"></span>
+				            <span class="icon-bar"></span>
+			          	</button>
+			          	<a class="navbar-brand" href="#">BuyTicket</a>
+			        </div>
+		        	<div id="navbar" class="collapse navbar-collapse">
+			          	<ul class="nav navbar-nav">
+			            	<li class="active"><a href="indexg.php">Home</a></li>
+			            	<li><a href="#about">Tickets</a></li>
+			            	<li><a href="#contact">Contact</a></li>
+			          	</ul>
+			         	<ul class="nav navbar-nav navbar-right">
+			         		<?php
+				         		if(!empty($_SESSION)){
+				         			if(array_key_exists("is_admin", $_SESSION)){
+				         					echo('<li><a href="userpageadmin.php">Hello '.$_SESSION["login"].'</a></li>');
+				         					echo('<li><a href="logout.php">Sign out</a></li>');	
+					         			}
+					         		elseif (array_key_exists("login", $_SESSION)){
+					         				echo('<li><a href="userpage.php">Hello '.$_SESSION["login"].'</a></li>');
+					         				echo('<li><a href="logout.php">Sign out</a></li>');
+					         			}	
+				         			}else{
+				         		echo('<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign in</a></li>');
+				         			}
+			         		?>		
+			        		<li><a href="basket.php"><span class="glyphicon glyphicon-shopping-cart"></span> My bag(<?php echo($cart_count);?>)</a></li>
+			        	</ul>
+		        	</div><!--/.nav-collapse -->
+		      	</div>
+		    </nav><!-- Nav -->
 		</header>
 		<div class="container page">
       		<div class="starter-template">
@@ -227,40 +166,39 @@ if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 				<div class="select">
 					<p>Select the date you would like to attend (if more than one is available) and the quantity of each ticket type you would like to purchase for that date.<br>Click 'Continue'</p>
 					<form action="basket.php" method="post">
-	 				<?php
-	 					$query = mysql_query("SELECT * FROM tickets") or die ("die");
-						while ($row = mysql_fetch_array($query)){
-							echo('<div class="col-md-1 ticket">
-									<div class="ticket-text">
-									  	<h3>'.$row[2].'</h3><p>- electronic ticket to the bearer</p>
-									  	<h1>'.$row[1].'$</h1>
-									</div>
-									<div class="center">
-										<hr>
-										<p>Choose quantity</p>
-										<div class="input-group">
-											<span class="input-group-btn">
-												<button type="button" class="btn btn-default btn-number box1" disabled="disabled" data-type="minus" data-field="ticket['.$row[0].']">
-													<span class="glyphicon glyphicon-minus"></span>
-												</button>
-											</span>
-											<input type="text" name="ticket['.$row[0].']" class="form-control input-number box1" value="0">
-											<span class="input-group-btn">
-												<button type="button" class="btn btn-default btn-number box1" data-type="plus" data-field="ticket['.$row[0].']">
-													<span class="glyphicon glyphicon-plus"></span>
-												</button>
-											</span>
+		 				<?php
+		 					$query = mysql_query("SELECT * FROM tickets") or die ("die");
+							while ($row = mysql_fetch_array($query)){
+								echo('<div class="col-md-1 ticket">
+										<div class="ticket-text">
+										  	<h3>'.$row[2].'</h3><p>- electronic ticket to the bearer</p>
+										  	<h1>'.$row[1].'E</h1>
 										</div>
-										<p></p>
-									</div>
-								</div>');
-						};
-	 				?>
-	 				<button type="submit" class="btn btn-default submit"<a href="basket.php"></a> Continue </button>
-	 			</form>
+										<div class="center">
+											<hr>
+											<p>Choose quantity</p>
+											<div class="input-group">
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default btn-number box1" disabled="disabled" data-type="minus" data-field="ticket['.$row[0].']">
+														<span class="glyphicon glyphicon-minus"></span>
+													</button>
+												</span>
+												<input type="text" name="ticket['.$row[0].']" class="form-control input-number box1" value="0">
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default btn-number box1" data-type="plus" data-field="ticket['.$row[0].']">
+														<span class="glyphicon glyphicon-plus"></span>
+													</button>
+												</span>
+											</div>
+											<p></p>
+										</div>
+									</div>');
+							};
+		 				?>
+	 					<button type="submit" class="btn btn-default submit"<a href="basket.php"></a> Continue </button>
+	 				</form>
 	 			</div>
 	 		</div>
-
 		</div>
 		<footer>
 			<div class="container contact">

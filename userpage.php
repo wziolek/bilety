@@ -1,14 +1,5 @@
 <?php
-if(session_id() == '' || !isset($_SESSION)) {
-    // session isn't started
-    session_start();
-}
-//session_start();
-$db=mysql_connect('localhost','root');//konektor laczy sie z baza danych http://localhost/koncert/wyglad/indexg.php
-mysql_select_db("TechnikiInternetu");
-
-$cart_count=0;
-// $loggedin="";
+	include "php.php";
 echo("<br>");
 if (!empty($_POST)){//sprawdzam czy tickets istnieje w sesji
 	if(array_key_exists("ticket", $_POST)){
@@ -27,16 +18,7 @@ if (!empty($_POST)){//sprawdzam czy tickets istnieje w sesji
 	}
 }//sprawdza czy zostało przesłane
 
-if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
-	foreach ($_SESSION["tickets"] as $key => $value) {
-		//echo($key);
-		//echo($value);
-		$cart_count =$cart_count+$value;
-	}
-}
-
 //system logowania
-
 if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 	$login = $_POST["login"];
 	$password = $_POST["password"];
@@ -141,58 +123,108 @@ if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 			         	<ul class="nav navbar-nav navbar-right">
 			         		<?php
 				         		if(!empty($_SESSION)){
-				         			if(array_key_exists("login", $_SESSION)){
-				         				echo('<li><a href="userpage.php">Hello '.$_SESSION["login"].'</a></li>');
-				         				echo('<li><a href="userpage.php">Sign out</a></li>');
+				         			if(array_key_exists("is_admin", $_SESSION)){
+				         					echo('<li><a href="userpageadmin.php">Hello '.$_SESSION["login"].'</a></li>');
+				         					echo('<li><a href="logout.php">Sign out</a></li>');	
+					         			}
+					         		elseif (array_key_exists("login", $_SESSION)){
+					         				echo('<li><a href="userpage.php">Hello '.$_SESSION["login"].'</a></li>');
+					         				echo('<li><a href="logout.php">Sign out</a></li>');
+					         			}	
+				         			}else{
+				         		echo('<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign in</a></li>');
 				         			}
-				         		}else{
-				         			echo('<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign in</a></li>');
-				         		}
 			         		?>		
 			        		<li><a href="basket.php"><span class="glyphicon glyphicon-shopping-cart"></span> My bag(<?php echo($cart_count);?>)</a></li>
-			      		</ul>
+			        	</ul>
 		        	</div><!--/.nav-collapse -->
 		      	</div>
 		    </nav>
 		</header>	
 		<div class="container page">
-      		<div class="starter-template">
-        		<?php
-					$query = mysql_query("SELECT id_customer FROM Customer WHERE login='".$_SESSION["login"]."'") or die ('die');
-				    $row = mysql_fetch_array($query);
-				    $nr_customer=$row[0];
-				            
-				    $query_order = mysql_query("SELECT id_orders,id_customer,value,order_date FROM orders WHERE id_customer='".$nr_customer."'") or die ('die');
-				    echo("<table cellpadding=\"2\" border=1>");
-				    			echo("<tr>
-							    	<td>id_orders</td>
-							    	<td>id_customer</td>
-							    	<td>value</td>
-							    	<td>order_date</td>
-							    </tr>");
-				    while ($row = mysql_fetch_array($query_order)) {
-				        echo("<tr><td>{$row[0]}</td><td>{$row[1]}</td><td>{$row[2]}</td><td>{$row[3]}</td></tr>");  
-				    }
-				    echo("</table>");
-        		?>
-			<div clas="user_order">
-       			<h4>Shipping address</h4>
-	       		<?php
-				 	$queryDane = mysql_query("SELECT * FROM Customer WHERE login='".$_SESSION["login"]."'");
-						$row = mysql_fetch_array($queryDane);
-						echo($row[1]);
-						echo("<br>");
-						echo($row[2]);
-						echo("<br>");
-						echo($row[5]);
-						echo("<br>");
-						echo($row[6]);
-						echo("<br>");
-						echo($row[8]);
-						echo(" ");
-						echo($row[7]);
-				 ?>
+		     <div class="starter-template">
+      			<?php
+				  	$query = mysql_query("SELECT first_name FROM Customer WHERE login='".$_SESSION["login"]."'");
+					$row = mysql_fetch_array($query);
+					echo('<h1>Hello '.$row[0].' <p class="glyphicon glyphicon-user"</p></h1>');
+				?>
+				<hr>
 			</div>
+    		<div class="row">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<div class="c">
+		  				<div class="panel-group">
+		    				<div class="panel panel-default">
+		     					<div class="panel-heading">
+		        					<h4 class="panel-title">
+		          						<a data-toggle="collapse" href="#collapse1">
+		          							<h1>Orders</h1>
+										</a>
+		        					</h4>
+		      					</div>
+		      					<div id="collapse1" class="panel-collapse collapse">
+		        					<div class="panel-body" align="center">
+			        					<?php
+											$query = mysql_query("SELECT id_customer FROM Customer WHERE login='".$_SESSION["login"]."'") or die ('die');
+										    $row = mysql_fetch_array($query);
+										    $nr_customer=$row[0];
+										            
+										    $query_order = mysql_query("SELECT id_orders,value,order_date FROM orders WHERE id_customer='".$nr_customer."'") or die ('die');
+										    echo("<table id='display'>");
+										    			echo("<tr>
+													    	<td>id_orders</td>
+													    	<td>value</td>
+													    	<td>order_date</td>
+													    </tr>");
+										    while ($row = mysql_fetch_array($query_order)) {
+										        echo("<tr><td>{$row[0]}</td><td>{$row[1]}</td><td>{$row[2]}</td></tr>");  
+										    }
+										    echo("</table>");
+						        		?>
+		        					</div>
+		      					</div>
+		    				</div>
+		  				</div>
+					</div>
+				</div>
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<div class="c">
+		  				<div class="panel-group">
+		    				<div class="panel panel-default">
+		     					<div class="panel-heading">
+		        					<h4 class="panel-title">
+		          						<a data-toggle="collapse" href="#collapse2">
+		          							<h1>Adress</h1>
+										</a>
+		        					</h4>
+		      					</div>
+		      					<div id="collapse2" class="panel-collapse collapse">
+		        					<div class="panel-body">
+										<div clas="user_order">
+							       			<h4>Shipping address</h4>
+								       		<?php
+											 	$queryDane = mysql_query("SELECT * FROM Customer WHERE login='".$_SESSION["login"]."'");
+													$row = mysql_fetch_array($queryDane);
+													echo($row[1]);
+													echo("<br>");
+													echo($row[2]);
+													echo("<br>");
+													echo($row[5]);
+													echo("<br>");
+													echo($row[6]);
+													echo("<br>");
+													echo($row[8]);
+													echo(" ");
+													echo($row[7]);
+											 ?>
+										</div>
+		        					</div>
+		      					</div>
+		    				</div>
+		  				</div>
+					</div>
+				</div>
+			</div>	
 	 	</div>
     	</div>
 		<footer>

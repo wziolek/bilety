@@ -1,42 +1,24 @@
 <?php
-if(session_id() == '' || !isset($_SESSION)) {
-    // session isn't started
-    session_start();
-}
-//session_start();
-$db=mysql_connect('localhost','root');//konektor laczy sie z baza danych http://localhost/koncert/wyglad/indexg.php
-mysql_select_db("TechnikiInternetu");
+	include "php.php";
+	// echo("<br>");
+	// if (!empty($_POST)){
+	// 	if(array_key_exists("ticket", $_POST)){
+	// 		if(array_key_exists("tickets", $_SESSION) ){
+	// 			foreach ($_POST["ticket"] as $key => $value){
+	// 				if(array_key_exists($key, $_SESSION["tickets"])){
+	// 					$_SESSION["tickets"][$key] += $value;
+	// 				}else{
+	// 					$_SESSION["tickets"][$key] = $value;
+	// 				}
+	// 			}
 
-$cart_count=0;
-// $loggedin="";
-echo("<br>");
-if (!empty($_POST)){//sprawdzam czy tickets istnieje w sesji
-	if(array_key_exists("ticket", $_POST)){
-		if(array_key_exists("tickets", $_SESSION) ){
-			foreach ($_POST["ticket"] as $key => $value){
-				if(array_key_exists($key, $_SESSION["tickets"])){
-					$_SESSION["tickets"][$key] += $value;
-				}else{
-					$_SESSION["tickets"][$key] = $value;
-				}
-			}
-
-		}else{
-				$_SESSION["tickets"]=$_POST["ticket"];
-		}
-	}
-}//sprawdza czy zostało przesłane
-
-if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
-	foreach ($_SESSION["tickets"] as $key => $value) {
-		//echo($key);
-		//echo($value);
-		$cart_count =$cart_count+$value;
-	}
-}
+	// 		}else{
+	// 				$_SESSION["tickets"]=$_POST["ticket"];
+	// 		}
+	// 	}
+	// }
 
 //system logowania
-
 if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 	unset($_SESSION['login']);
 	unset($_SESSION['is_admin']);
@@ -50,7 +32,6 @@ if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 	$password = mysql_real_escape_string($password);
 
 	//$password = password_hash($password,PASSWORD_DEFAULT);
-
 	$query = mysql_query("SELECT login, password, is_admin FROM Customer WHERE login='".$login."'") or die ('die');
 	$result = mysql_fetch_assoc($query);//pobranie
 
@@ -69,33 +50,21 @@ if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 	}else{
 		echo " Błędne logowanie!";
 	}
-
-}//system logowania
-
+}
 ?>
 
 <html>
 	<head>
-	<title> Szablon HTML </title>
-	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<meta name="Description" content="Mechanizm rejestracji użytkownika w aplikacji internetowej">
-	<meta name="Keywords" content="dane">
-	<meta name="Author" content=" Weronika Krasoń">
-	<link rel="stylesheet" href="stylesg.css">
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script>
-	// 	$(document).on('click', 'a', function(event){
-	//     event.preventDefault();
-	//     $('body').animate({
-	//         scrollTop: $($.attr(this, 'href')).offset().top
-	//    	 }, 800);
-	// 	});
-	 </script>
-	<script   src="https://code.jquery.com/jquery-3.2.1.min.js"   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="   crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
+		<title> Szablon HTML </title>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<meta name="Description" content="Mechanizm rejestracji użytkownika w aplikacji internetowej">
+		<meta name="Keywords" content="dane">
+		<meta name="Author" content=" Weronika Krasoń">
+		<link rel="stylesheet" href="stylesg.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script   src="https://code.jquery.com/jquery-3.2.1.min.js"   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="   crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	</head>
 	<body>
 
@@ -144,20 +113,21 @@ if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 			          	</ul>
 			         	<ul class="nav navbar-nav navbar-right">
 			         		<?php
-			         		if(!empty($_SESSION)){
-			         			if(array_key_exists("is_admin", $_SESSION)){
-			         				if($_SESSION['is_admin']==1){
-			         					echo('<li><a href="userpageadmin.php">Hello '.$_SESSION["login"].'</a></li>');
-			         				}
-			         			}elseif (array_key_exists("login", $_SESSION)){
-			         				echo('<li><a href="userpage.php">Hello '.$_SESSION["login"].'</a></li>');
-			         			}
-			         		}else{
-			         			echo('<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign in</a></li>');
-			         		}
+				         		if(!empty($_SESSION)){
+				         			if(array_key_exists("is_admin", $_SESSION)){
+				         				echo('<li><a href="userpageadmin.php">Hello '.$_SESSION["login"].'</a></li>');
+				         				echo('<li><a href="logout.php">Sign out</a></li>');	
+					         		}elseif(array_key_exists("login", $_SESSION)){
+					         			echo('<li><a href="userpage.php">Hello '.$_SESSION["login"].'</a></li>');
+					         			echo('<li><a href="logout.php">Sign out</a></li>');
+									}
+								}
+				         		else{
+				         			echo('<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign in</a></li>');
+				         		}
 			         		?>		
 			        		<li><a href="basket.php"><span class="glyphicon glyphicon-shopping-cart"></span> My bag(<?php echo($cart_count);?>)</a></li>
-			      		</ul>
+			        	</ul>
 		        	</div><!--/.nav-collapse -->
 		      	</div>
 		    </nav>
@@ -234,7 +204,7 @@ if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 						echo('</div>');
 					echo('</div>');
 
-					echo('<a class="submit" href=confirm_order.php><h4>Confirm order</h4></a>');
+					echo('<a class="submit" href=confirm_order.php>Confirm order</a>');
 				}else{
 					?>
       		<div class="starter-template">
@@ -256,19 +226,19 @@ if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 			      					</div>
 			      					<div id="collapse1" class="panel-collapse collapse">
 			        					<div class="panel-body">
-			        						<form class=" container form" action="rejestracja.php" method="post"> 
-												<fieldset class="c">
+			        						<form class="form" action="rejestracja_i.php" method="post"> 
+												<fieldset class="rejestr">
 													<div class="box">
 														<p>										
-															<label for="imie" accesskey="i">Imię</label>
-															<input type="text" name="imie" />
+															<label for="first_name" accesskey="i">First name</label>
+															<input type="text" name="first_name" />
 														</p>
 													</div>
 													<div class="box">
 														
 														<p>
-															<label for="nazwisko" accesskey="n">Nazwisko </label>
-															<input type="text" name="nazwisko" />
+															<label for="last name" accesskey="n">Last name</label>
+															<input type="text" name="last_name" />
 														</p>
 													</div>
 													<div class="box">
@@ -285,35 +255,35 @@ if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 													</div>
 													<div class="box">
 														<p>
-															<label for="haslo2" accesskey="h">Powtórz hasło </label>
-															<input type="password" name="haslo2" />
+															<label for="password2" accesskey="h">hasło </label>
+															<input type="password" name="password2" />
 														</p>
 													</div>
 													<div class="box">
 														<p>
 															<label for="email" accesskey="e">e-mail </label>
-															<input type="text" name="email" />
+															<input type="text" name="e_mail" />
 														</p>
 													</div>
 													<div class="box">			
 														
-															<label for="email_2" accesskey="e">Powtórz e-mail </label>
+															<label for="email_2" accesskey="e"> e-mail </label>
 															<input type="text" name="email_2" />
 													
-															<label for="adres" accesskey="a">Ulica, numer domu/mieszkania:</label>
-															<input type="text" name="adres" />
-												
-															<label for="kod_pocztowy" accesskey="m">Kod pocztowy </label>
-															<input type="text" name="kod_pocztowy" />
-															
-												
-															<label for="miejscowosc" accesskey="k">miejscowość </label>
-															<input type="text" name="miejscowosc" />
+															<label for="Adress" accesskey="a">Adress:</label>
+															<input type="text" name="adress" />
+
+															<label for="City" accesskey="k">City</label>
+															<input type="text" name="city" />
+
+															<label for="Postal code" accesskey="m">Postal code </label>
+															<input type="text" name="postal_ode" />	
 													
 													</div>
+													<br>
 													<p>
-														<label for="kraj" accesskey="r">Kraj</label>
-														<select name="kraj" size="1">
+														<label for="country" accesskey="r">Kraj</label>
+														<select name="id_country" size="1">
 															<option label="Austria" value="1">Austria</option>
 															<option label="Belgia" value="2">Belgia</option>
 															<option label="Bułgaria" value="3">Bułgaria</option>
@@ -344,18 +314,19 @@ if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 															<option label="Zjednoczone Królestwo" value="28">Zjednoczone Królestwo</option>
 														</select>
 													</p>
+													<br>
 													<p>
-														<label for="media" accesskey="m">W jaki sposób dowiedziałaś/eś się o koncercie?  (mozna zaznaczyc kilka opcji)</label><br>
-														<input type="checkbox" name="media[]" value="1" /> telewizja
+														<label for="id_media" accesskey="m">W jaki sposób dowiedziałaś/eś się o koncercie?  (mozna zaznaczyc kilka opcji)</label><br>
+														<input type="checkbox" name="media[]" value="1" /> tv
 														<input type="checkbox" name="media[]" value="2"/> radio
 														<input type="checkbox" name="media[]" value="3"/> internet
-														<input type="checkbox" name="media[]" value="4" /> prasa 
-														<input type="checkbox" name="media[]" value="5" /> znajomi
+														<input type="checkbox" name="media[]" value="4" /> newspaper
+														<input type="checkbox" name="media[]" value="5" /> friends
+													</p>
+													<p>
+														<input type="submit" class="btn btn-default submit rejestr" value="Przeslij dane"/>			
 													</p>
 												</fieldset>
-												<p>
-													<input type="submit" class="btn btn-default submit" value="Przeslij dane"/>			
-												</p>
 											</form>
 			        					</div>
 			      					</div>
@@ -378,7 +349,7 @@ if(array_key_exists("login", $_POST) && array_key_exists("password", $_POST)){
 			      					<div id="collapse2" class="panel-collapse collapse">
 			        					<div class="panel-body">
 			        						<form action="rejestracja.php" method="post">
-						    					<div class="login">
+						    					<div class="rejestr">
 													<label class="h">Email</label>
 											    	<input type="text" placeholder="Enter Username" name="login" required></input>
 											    	<label class="h">Password</label>

@@ -44,8 +44,20 @@ footer{
 	text-align: left;
 
 }
-/*modal*/
+.rejestr{
+	text-align: left;
+}
+.rejestr<p{
+	text-align: center;
+}
 
+ label{
+	font-weight: normal !important;
+}
+
+
+
+/*modal*/
 .modal{
 	margin-right: -515px;
 	margin-top: 30px;
@@ -53,9 +65,7 @@ footer{
 .h{
 	font-weight: normal !important;
 }
-.login{
-	text-align: left;
-}
+
 
 .page{
 	text-align: center;
@@ -135,14 +145,12 @@ footer{
 #map {
     height: 70%;
     width: 100%;
-    }
-
+}
 .glyphicon-envelope,.glyphicon-phone{
 font-size: 3em;
 text-align: center;
 padding-top: 20px;
 }
-
 .icons{
 	text-align: center;
 }
@@ -150,7 +158,6 @@ padding-top: 20px;
 	color: #83438A;
 	text-decoration: none;
 }
-
 .icons >a{
 	color: black;
 	text-decoration: none;
@@ -165,14 +172,12 @@ color: #83438A;
 .adress{
 	padding-bottom: 20px;
 }
-
 .button{
 	clear: center;
 	margin-top: 10px;
 	width: 100%;
 	display: inline-block;
 }
-
 button.submit, a.submit{
 	border: none;
 	background-color: #83438A;
@@ -187,7 +192,6 @@ button.submit, a.submit{
 .btn.btn-default.submit{
 	width: 70%;
 }
-
 input.submit{
 	border: none;
 	background-color: #83438A;
@@ -197,31 +201,23 @@ input.submit{
 	border-radius: .25em;
 	transition: all .2s ease-out
 }
-
 .close{
 	margin-right: 30px;
 }
-
 .remember>a{
 color: black;
 }
-
 .cancelbtn {
     width: 50%;
     padding: 10px 18px;
     background-color: #f44336;
 }
-
 .imgcontainer {
     text-align: center;
     margin: 24px 0 12px 0;
 }
 
-
-
-
 /*------BASKET-----*/
-
 .shopping{
 	text-align: left;
 }
@@ -229,22 +225,16 @@ color: black;
 	margin-top: 0px;
 	margin-bottom: 5px;
 }
-
 .product input[type=value]{
 	display: inline-block;
 	border: 0px solid white;
 	background-color: white;
 }
-
-
 .signin{
 	width: 50%;
 }
 /* Extra small devices (phones, less than 768px) */
 /* No media query since this is the default in Bootstrap */
-
-
-
 @media (max-width: 500px) { 
 	.logo{
 		font-weight: bold;
@@ -264,13 +254,11 @@ color: black;
 		transform: scale(0.8,0.8); 
 	}
 }
-
 @media (max-width: 1200px) {
 	.ticket{
 		display: inline-block;
 	}
 }
-
 .panel-title h1{
 	color: #83438A;
 }
@@ -313,7 +301,6 @@ a.forgotten{
 
 /*USERPAGE*/
 .page <.user_order{
-
 	text-align: left;
 }
 

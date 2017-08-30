@@ -1,53 +1,30 @@
 <?php
-if(session_id() == '' || !isset($_SESSION)) {
-    // session isn't started
-    session_start();
-}
-//session_start();
-$db=mysql_connect('localhost','root');//konektor laczy sie z baza danych http://localhost/koncert/wyglad/indexg.php
-mysql_select_db("TechnikiInternetu");
-$cart_count=0;
-$message="";
-if (!empty($_GET)){//GET-link, POST form czy bilet istnieje w parametrach przesłanych 
-	if(array_key_exists("tickets", $_SESSION)){
-			if (array_key_exists("delete_ticket_id",$_GET)){
-				$_SESSION["tickets"][$_GET["delete_ticket_id"]]=0;
-				$message="Your tickets were deleted.";
-			}
-	}
-}
-
-
-
-echo("<br>");
-if (!empty($_POST)){//sprawdzam czy tickets istnieje w sesji/ czy istnieje w poscie bilety przesłane
-	if(array_key_exists("ticket", $_POST)){
-		if(array_key_exists("tickets", $_SESSION)){//funkcja ktura sprawdza czy jakies bilety sa w sesji
-			foreach ($_POST["ticket"] as $key => $value){//tickets - tablica asojacyjna. dla każdego przełanego biletu ktory zapisujesz jako klucz i wartosc
-				if(array_key_exists($key, $_SESSION["tickets"])){//czyli jezeli istnieje juz przeslanego biletu w sesji istnieje
-					$_SESSION["tickets"][$key] += $value; // do istniejeacego biletu dodajesz wartosc
-				}else{
-					$_SESSION["tickets"][$key] = $value;//  to sie stanei w tedy kiedy w sesji nie bylo niczego (za pierwszym razem albo jesli nowy bilet zostal dodoany do bazy )w przecziwnym przypadku dodaj bilet do tablicy tikets i dodaj wartosc (nowy +jego wartosc)
+	include "php.php";
+	if (!empty($_GET)){//GET-link, POST form czy bilet istnieje w parametrach przesłanych 
+		if(array_key_exists("tickets", $_SESSION)){
+				if (array_key_exists("delete_ticket_id",$_GET)){
+					$_SESSION["tickets"][$_GET["delete_ticket_id"]]=0;
+					$message="Your tickets were deleted.";
 				}
-			}
-
-		}else{
-				$_SESSION["tickets"]=$_POST["ticket"];
 		}
 	}
-}//sprawdza czy zostało przesłane
+	echo("<br>");
+	if (!empty($_POST)){
+		if(array_key_exists("ticket", $_POST)){
+			if(array_key_exists("tickets", $_SESSION)){
+				foreach ($_POST["ticket"] as $key => $value){
+					if(array_key_exists($key, $_SESSION["tickets"])){
+						$_SESSION["tickets"][$key] += $value; 
+					}else{
+						$_SESSION["tickets"][$key] = $value;
+					}
+				}
 
-
-if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
-	foreach ($_SESSION["tickets"] as $key => $value) {
-		//echo($key);
-		//echo($value);
-		$cart_count =$cart_count+$value;
+			}else{
+					$_SESSION["tickets"]=$_POST["ticket"];
+			}
+		}
 	}
-}
-
-
-
 ?>
 <html>
 	<head>
@@ -184,19 +161,24 @@ if (array_key_exists("tickets", $_SESSION)){//jesli tickets istnieje w sesji
 		            	<li><a href="#about">Tickets</a></li>
 		            	<li><a href="#contact">Contact</a></li>
 		          	</ul>
-		         	<ul class="nav navbar-nav navbar-right">
-		         		<?php
-		         		if(!empty($_SESSION)){
-		         			if(array_key_exists("login", $_SESSION)){
-		         				echo('<li><a href="userpage.php">Hello '.$_SESSION["login"].'</a></li>');
-		         				echo('<li><a href="userpage.php">Sign out</a></li>');
-		         			}
-		         		}else{
-		         			echo('<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign in</a></li>');
-		         		}
-		         		?>		
-		        		<li><a href="basket.php"><span class="glyphicon glyphicon-shopping-cart"></span> My bag(<?php echo($cart_count);?>)</a></li>
-		      		</ul>
+			         	<ul class="nav navbar-nav navbar-right">
+			         		<?php
+				         		if(!empty($_SESSION)){
+				         			if(array_key_exists("is_admin", $_SESSION)){
+				         				// if($_SESSION['is_admin']==1){
+				         					echo('<li><a href="userpageadmin.php">Hello '.$_SESSION["login"].'</a></li>');
+				         					echo('<li><a href="logout.php">Sign out</a></li>');	
+					         			}elseif (array_key_exists("login", $_SESSION)){
+					         				echo('<li><a href="userpage.php">Hello '.$_SESSION["login"].'</a></li>');
+					         				echo('<li><a href="logout.php">Sign out</a></li>');
+					         			}
+					         	}else{
+				         		echo('<li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Sign in</a></li>');
+				         			}
+
+			         		?>		
+			        		<li><a href="basket.php"><span class="glyphicon glyphicon-shopping-cart"></span> My bag(<?php echo($cart_count);?>)</a></li>
+			        	</ul>
 	        	</div><!--/.nav-collapse -->
 	      	</div>
 	    </nav>
